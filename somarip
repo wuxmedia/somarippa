@@ -1,0 +1,70 @@
+#!/bin/bash
+## WuX 2014-07-24 -finished 2014-08-13
+## Complex script to do just what I want, with somaFM Stations
+
+## tidy up just in case No complaints! 
+/bin/rm -r /tmp/m3u 2> /dev/null
+/bin/rm /tmp/soma* 2> /dev/null
+
+#Make the dest file
+echo "#EXTM3U" > /tmp/somapls.m3u
+
+#User Information:
+echo -e "Working.....\nGetting station list..."
+
+## Get complete list of streams, non verbose:
+wget -qP /tmp http://somafm.com/SomaFM.com.m3u -O /tmp/somafmlist.txt
+
+## Get just the playlists url:
+ST2=$(grep "http:" /tmp/somafmlist.txt)
+
+## Info 
+echo "Converting them"
+
+## Turn them into .m3u, AND add a dir to the webpath:
+echo "$ST2" | sed "s@.pls@.m3u@g;s@.com@.com/m3u@g" > /tmp/somafmlist.txt
+
+echo "http://somafm.com/m3u/defcon.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/bagel.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/folkfwd.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/thetrip.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/earwaves.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/sonicuniverse.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/7soul.m3u" >> /tmp/somafmlist.txt
+echo "http://somafm.com/m3u/deepspaceone.m3u" >> /tmp/somafmlist.txt
+
+# Info
+echo "Downloading all the individual playlists..."
+ 
+## Quietly wget those fuckers + extras:
+mkdir /tmp/m3u
+wget -qP /tmp/m3u -i /tmp/somafmlist.txt 
+echo "Fixing them up, pretty like."
+
+## Fuck em up:
+for i in /tmp/m3u/*.m3u; do 
+sed s@icy@http@g $i > $i.x
+echo $i |cut -d "/" -f4 | cut -d "." -f1 >> $i.x
+mv $i.x $i
+done
+
+## Pull out the info into a .m3u
+for z in /tmp/m3u/*.m3u; do
+NAME=$(tail -1 $z) ADR=$(head -1 $z)
+echo -e "#EXTINF:0,$NAME\n$ADR" >> /tmp/somapls.m3u
+done
+
+## Chuck it in the home dir
+mv /tmp/somapls.m3u ~/
+
+## Tidy up, just in case 
+/bin/rm -r /tmp/m3u
+/bin/rm /tmp/soma*
+
+## Manually adding Radiolla.
+echo -e "#EXTINF:0,Equalyza\nhttp://air.radiolla.com/equalyza192k\n#EXTINF:0,Ilma\nhttp://air.radiolla.com/ilma192k\n#EXTINF:0,Jiraffe\nhttp://air.radiolla.com/jiraffe192k\n#EXTINF:0,Mantra\nhttp://air.radiolla.com/mantra192k\n#EXTINF:0,Radiolla\nhttp://air.radiolla.com/radiolla192k\n#EXTINF:0,Volta\nhttp://air.radiolla.com/volta192k" >> somapls.m3u
+
+## Info:
+echo "Finished, somapls.m3u can be found in your home dir"
+
+
