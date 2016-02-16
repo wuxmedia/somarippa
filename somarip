@@ -54,15 +54,15 @@ NAME=$(tail -1 $z) ADR=$(head -1 $z)
 echo -e "#EXTINF:0,$NAME\n$ADR" >> /tmp/somapls.m3u
 done
 
+## Manually adding Radiolla.
+echo -e "#EXTINF:0,Equalyza\nhttp://air.radiolla.com/equalyza192k\n#EXTINF:0,Ilma\nhttp://air.radiolla.com/ilma192k\n#EXTINF:0,Jiraffe\nhttp://air.radiolla.com/jiraffe192k\n#EXTINF:0,Mantra\nhttp://air.radiolla.com/mantra192k\n#EXTINF:0,Radiolla\nhttp://air.radiolla.com/radiolla192k\n#EXTINF:0,Volta\nhttp://air.radiolla.com/volta192k" >> /tmp/somapls.m3u
+
 ## Chuck it in the home dir
 mv /tmp/somapls.m3u ~/
 
 ## Tidy up, just in case 
 /bin/rm -r /tmp/m3u
 /bin/rm /tmp/soma*
-
-## Manually adding Radiolla.
-echo -e "#EXTINF:0,Equalyza\nhttp://air.radiolla.com/equalyza192k\n#EXTINF:0,Ilma\nhttp://air.radiolla.com/ilma192k\n#EXTINF:0,Jiraffe\nhttp://air.radiolla.com/jiraffe192k\n#EXTINF:0,Mantra\nhttp://air.radiolla.com/mantra192k\n#EXTINF:0,Radiolla\nhttp://air.radiolla.com/radiolla192k\n#EXTINF:0,Volta\nhttp://air.radiolla.com/volta192k" >> somapls.m3u
 
 ## Info:
 echo "Finished, somapls.m3u can be found in your home dir"
